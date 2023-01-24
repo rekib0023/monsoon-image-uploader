@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Post
@@ -15,3 +15,11 @@ class PostsView(ListCreateAPIView):
         if show_fav is not None:
             queryset = queryset.filter(isFavourite=True)
         return queryset
+
+
+class PostDetailView(RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Post.objects.all()
+    lookup_field = "id"
+    serializer_class = PostSerializer
+    http_method_names = ["get", "post", "patch", "delete"]

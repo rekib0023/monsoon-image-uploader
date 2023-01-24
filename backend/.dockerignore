@@ -1,0 +1,6 @@
+.dbdata/
+.idea/
+media/
+venv/
+.dev.env
+__pycache__/

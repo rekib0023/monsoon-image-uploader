@@ -58,7 +58,7 @@ const Login = () => {
       if (!error?.response) {
         setErrMsg("No Server Response");
       } else if (error.response?.data) {
-        setErrMsg(Object.values(error.response.data)[0][0]);
+        setErrMsg(Object.values(error.response.data)[0]);
       } else {
         setErrMsg("Registration Failed");
       }

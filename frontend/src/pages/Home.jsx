@@ -19,9 +19,9 @@ const Home = () => {
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
-    const controller = new AbortController();
-
+    
     const getPosts = async () => {
+      const controller = new AbortController();
       try {
         if (!showModal) {
           const response = await axiosPrivate.get(
@@ -67,7 +67,7 @@ const Home = () => {
           {<ModalForm setShowModal={setShowModal} />}
         </Modal>
       )}
-      {posts && isLoaded ? (
+      {posts.length !== 0 && isLoaded ? (
         <PostsGrid posts={posts} />
       ) : (
         <p className="text-center mt-16 text-4xl text-gray-400">No images</p>

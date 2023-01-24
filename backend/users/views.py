@@ -25,30 +25,8 @@ class RegisterView(APIView):
 class UserDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,)
+    http_method_names = ["get"]
 
     def retrieve(self, request, *args, **kwargs):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
-
-    def update(self, request, *args, **kwargs):
-        data = request.data
-        user = User.objects.get(pk=request.user.pk)
-        try:
-            user.name = data["name"]
-            user.email = data["email"]
-            user.save()
-            serializer = UserSerializer(user)
-            return Response(serializer.data)
-        except Exception as e:
-            raise APIException(
-                detail="Invalid fields", code=status.HTTP_400_BAD_REQUEST
-            )
-
-    def destroy(self, request, *args, **kwargs):
-        data = request.data
-        user = User.objects.get(pk=request.user.pk)
-        try:
-            user.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except Exception as e:
-            raise APIException(detail=str(e))
