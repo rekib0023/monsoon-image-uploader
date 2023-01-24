@@ -6,9 +6,9 @@ import InputField from "../components/InputField";
 import { useEffect, useRef, useState } from "react";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
-import useLocalStorage from "../hooks/useLocalStorage"
+import useLocalStorage from "../hooks/useLocalStorage";
 
-const LOGIN_URL = "login";
+const LOGIN_URL = "/login";
 
 const Login = () => {
   const { setAuth } = useAuth();
@@ -24,7 +24,7 @@ const Login = () => {
   const [check, toggleCheck] = useToggle("persist", true);
   const [errMsg, setErrMsg] = useState("");
 
-  const [_, setpersistRefreshToken] = useLocalStorage("refreshToken", "")
+  const [_, setpersistRefreshToken] = useLocalStorage("refreshToken", "");
 
   useEffect(() => {
     setErrMsg("");
@@ -45,10 +45,10 @@ const Login = () => {
       );
       const accessToken = response?.data?.access;
       const refreshToken = response?.data?.refresh;
-      if (check){
-        setpersistRefreshToken(refreshToken)
+      if (check) {
+        setpersistRefreshToken(refreshToken);
       } else {
-        setpersistRefreshToken("")
+        setpersistRefreshToken("");
       }
       setAuth({ email, accessToken, refreshToken });
       setPassword("");
@@ -57,10 +57,10 @@ const Login = () => {
       console.log(error.response);
       if (!error?.response) {
         setErrMsg("No Server Response");
-      } else if (error.response?.data?.detail) {
-        setErrMsg(error.response?.data?.detail);
+      } else if (error.response?.data) {
+        setErrMsg(Object.values(error.response.data)[0][0]);
       } else {
-        setErrMsg("Login Failed");
+        setErrMsg("Registration Failed");
       }
       errRef.current.focus();
     }

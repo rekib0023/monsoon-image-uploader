@@ -1,55 +1,76 @@
 import Container from "../components/Container";
-import useAuth from "../hooks/useAuth";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+
+import Headers from "../components/Headers";
+import Modal from "../components/Modal";
+import ModalForm from "../components/ModalForm";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import useLogout from "../hooks/useLogout";
-import { useNavigate } from "react-router-dom";
+import PostsGrid from "../components/PostsGrid";
+
+const POST_URL = "/posts";
 
 const Home = () => {
-  const [user, setUser] = useState();
+  const [showFav, setShowFav] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [posts, setPosts] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const { auth } = useAuth();
 
   const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
-  const logout = useLogout();
-
-  const signOut = () => {
-    logout();
-    navigate("/");
-  };
 
   useEffect(() => {
     const controller = new AbortController();
 
-    const getUser = async () => {
+    const getPosts = async () => {
       try {
-        const response = await axiosPrivate.get("/me", {
-          signal: controller.signal,
-        });
-        setUser(response.data);
-        setIsLoaded(true);
+        if (!showModal) {
+          const response = await axiosPrivate.get(
+            POST_URL.concat(showFav ? "?showFav=true" : ""),
+            {
+              signal: controller.signal,
+            }
+          );
+          setPosts(response.data);
+          setIsLoaded(true);
+        }
       } catch (error) {
         console.error(error.response);
         toast.error(error.response.data.detail);
       }
     };
-    getUser();
-  }, []);
-  console.log(user);
+    getPosts();
+  }, [showFav, showModal]);
+
   return (
     <Container>
-      {isLoaded && (
-        <div className="flex items-center">
-          <h1 className="text-4xl mt-16">Welcome {user.name} 👋</h1>
-          <button
-            class="ml-auto mt-16 bg-transparent hover:bg-gray-900 text-gray-900 font-semibold hover:text-white py-2 px-4 border border-gray-900 hover:border-transparent rounded"
-            onClick={signOut}
-          >
-            Logout
-          </button>
-        </div>
+      <Headers setShowModal={setShowModal} />
+      <div>
+        <button
+          className={`text-lg mt-16 bg-transparent hover:border-b-2 text-gray-900 py-2 px-4 w-1/2 border-gray-900 ${
+            !showFav ? "border-b-2" : ""
+          }`}
+          onClick={() => setShowFav(false)}
+        >
+          All
+        </button>
+        <button
+          className={`text-lg mt-16 bg-transparent hover:border-b-2 text-gray-900 py-2 px-4 w-1/2 border-gray-900 ${
+            showFav ? "border-b-2" : ""
+          }`}
+          onClick={() => setShowFav(true)}
+        >
+          Favourites
+        </button>
+      </div>
+      {showModal && (
+        <Modal title="Upload image" setShowModal={setShowModal}>
+          {<ModalForm setShowModal={setShowModal} />}
+        </Modal>
+      )}
+      {posts && isLoaded ? (
+        <PostsGrid posts={posts} />
+      ) : (
+        <p className="text-center mt-16 text-4xl text-gray-400">No images</p>
       )}
     </Container>
   );
