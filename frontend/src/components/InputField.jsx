@@ -1,11 +1,11 @@
-const InputField = ({ id, type, placeholder, label, handleChange }) => {
+const InputField = ({ id, inputType, placeholder, label, handleChange }) => {
   return (
     <div className="form-group mb-6">
-      <label for={id} className="form-label inline-block mb-2 text-gray-700">
+      <label htmlFor={id} className="form-label inline-block mb-2 text-gray-700">
         {label}
       </label>
       <input
-        type={type}
+        type={inputType}
         className="form-control
             block
             w-full

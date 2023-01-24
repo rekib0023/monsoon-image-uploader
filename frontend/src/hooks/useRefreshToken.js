@@ -1,15 +1,23 @@
 import axios from "../api/axios";
 import useAuth from "./useAuth";
+import getLocalValue from "../hooks/useLocalStorage";
 
 const useRefreshToken = () => {
+  const persist = getLocalValue("persist", null)[0];
   const { setAuth, auth } = useAuth();
+  let refreshToken = "";
+  if (persist) {
+    refreshToken = getLocalValue("refreshToken", null)[0];
+  } else {
+    refreshToken = auth.refreshToken;
+  }
 
   const refresh = async () => {
     const response = await axios.post(
       "/login/refresh",
-      JSON.stringify({
-        refresh: auth.refreshToken,
-      }),
+      {
+        refresh: refreshToken,
+      },
 
       {
         headers: { "Content-Type": "application/json" },

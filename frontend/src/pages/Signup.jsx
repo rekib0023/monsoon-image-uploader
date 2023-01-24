@@ -12,19 +12,19 @@ const Signup = () => {
         <form>
           <InputField
             id="text"
-            type="text"
+            inputType="text"
             placeholder="Enter your name"
             label="Name"
           />
           <InputField
             id="email"
-            type="email"
+            inputType="email"
             placeholder="Enter email"
             label="Email address"
           />
           <InputField
             id="password"
-            type="password"
+            inputType="password"
             placeholder="Password"
             label="Password"
           />

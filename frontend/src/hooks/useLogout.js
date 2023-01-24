@@ -1,15 +1,12 @@
-import axios from "../api/axios";
 import useAuth from "./useAuth";
 
 const useLogout = () => {
   const { setAuth } = useAuth();
 
-  const logout = async () => {
+  const logout = () => {
     setAuth({});
     try {
-      await axios("/auth/logout", {
-        withCredentials: true,
-      });
+      localStorage.clear()
     } catch (error) {
       console.error(error);
     }

@@ -1,10 +1,12 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
+import useToggle from "../hooks/useToggle";
 import InputField from "../components/InputField";
 import { useEffect, useRef, useState } from "react";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
+import useLocalStorage from "../hooks/useLocalStorage"
 
 const LOGIN_URL = "login";
 
@@ -18,8 +20,11 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(true);
+
+  const [check, toggleCheck] = useToggle("persist", true);
   const [errMsg, setErrMsg] = useState("");
+
+  const [_, setpersistRefreshToken] = useLocalStorage("refreshToken", "")
 
   useEffect(() => {
     setErrMsg("");
@@ -40,6 +45,11 @@ const Login = () => {
       );
       const accessToken = response?.data?.access;
       const refreshToken = response?.data?.refresh;
+      if (check){
+        setpersistRefreshToken(refreshToken)
+      } else {
+        setpersistRefreshToken("")
+      }
       setAuth({ email, accessToken, refreshToken });
       setPassword("");
       navigate(from, { replace: true });
@@ -71,14 +81,14 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <InputField
             id="email"
-            type="email"
+            inputType="email"
             placeholder="Enter email"
             label="Email address"
             handleChange={(e) => setEmail(e.target.value)}
           />
           <InputField
             id="password"
-            type="password"
+            inputType="password"
             placeholder="Password"
             label="Password"
             handleChange={(e) => setPassword(e.target.value)}
@@ -86,7 +96,8 @@ const Login = () => {
           <Checkbox
             id="remember"
             label="Remember me"
-            handleChange={() => setRemember(!remember)}
+            onChange={toggleCheck}
+            checked={check}
           />
           <Button label="Sign in" />
           <p className="text-gray-800 mt-6 text-center">
