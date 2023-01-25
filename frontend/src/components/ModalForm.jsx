@@ -2,13 +2,20 @@ import { useState } from "react";
 import { axiosPrivate } from "../api/axios";
 import InputField from "./InputField";
 import { toast } from "react-toastify";
+import Creatable from "react-select/creatable";
 
 const POST_URL = "/posts";
 
-const ModalForm = ({ setShowModal }) => {
+const ModalForm = ({ setShowModal, tags }) => {
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
   const [image, setImage] = useState();
+  const [tagList, setTagList] = useState([]);
+
+  let options = [];
+  tags.forEach((tag) => {
+    options.push({ value: tag.name, label: tag.name });
+  });
 
   const uploadImage = async (e) => {
     e.preventDefault();
@@ -18,6 +25,12 @@ const ModalForm = ({ setShowModal }) => {
     data.append("title", title);
     data.append("description", description);
     data.append("image", image);
+    console.log(tagList);
+    var temp = [];
+    tagList.forEach((tag) => {
+      temp.push(tag.value);
+    });
+    data.append("tags", temp.join());
     try {
       await axiosPrivate.post(POST_URL, data, {
         headers: {
@@ -52,6 +65,22 @@ const ModalForm = ({ setShowModal }) => {
           label="Description"
           handleChange={(e) => setDescription(e.target.value)}
         />
+        <div className="form-group mb-6">
+          <label
+            htmlFor="multi"
+            className="form-label inline-block mb-2 text-gray-700"
+          >
+            Tags
+          </label>
+          <Creatable
+            className="mb-5"
+            for="multi"
+            isMulti
+            isClearable
+            options={options}
+            onChange={(e) => setTagList(e)}
+          />
+        </div>
         <input
           type="file"
           name="image"
@@ -66,9 +95,7 @@ const ModalForm = ({ setShowModal }) => {
           >
             Close
           </button>
-          <button
-            className="hover:bg-gray-900 bg-gray-700 font-semibold text-white py-2 px-4 hover:border-transparent rounded"
-          >
+          <button className="hover:bg-gray-900 bg-gray-700 font-semibold text-white py-2 px-4 hover:border-transparent rounded">
             Submit
           </button>
         </div>

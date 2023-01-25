@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import Modal from "./Modal";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import {
   faHeart as faHeartAlt,
@@ -11,7 +12,7 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const POST_URL = "/posts";
-const delay = ms => new Promise(res => setTimeout(res, ms));
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 const PostsGrid = ({ posts }) => {
   const [showModal, setShowModal] = useState(false);
@@ -71,17 +72,23 @@ const PostsGrid = ({ posts }) => {
       {posts.map((post) => (
         <div className="max-w-sm rounded overflow-hidden shadow-lg">
           <div className="h-64">
-            <img
+            <LazyLoadImage
               className="object-cover h-64 w-full rounded-lg cursor-pointer"
               src={post.image}
               widths={[400, 600, 1024]}
               sizes="(max-width: 400px) 400px, (max-width: 600px) 600, 1024px"
-              aspectRatio="5:3"
               alt={post.title}
               onClick={() => updateCurrentPost(post)}
             />
           </div>
-          <div class="px-2 py-4 font-bold text-xl">{post.title}</div>
+          <div className="px-2 py-4">
+            <div className=" font-bold text-xl">{post.title}</div>
+            <div className="flex gap-2 mt-2 font-medium text-sm text-sky-800">
+              {post.tags.map((tag) => (
+                <p>#{tag}</p>
+              ))}
+            </div>
+          </div>
         </div>
       ))}
       {showModal && (
@@ -93,13 +100,14 @@ const PostsGrid = ({ posts }) => {
                 src={currentPost.image}
                 widths={[400, 600, 1024]}
                 sizes="(max-width: 400px) 400px, (max-width: 600px) 600, 1024px"
-                aspectRatio="5:3"
                 alt={currentPost.title}
               />
             </div>
             <div className="px-5 py-4 ">
               <div className="flex">
-                <div class="font-bold text-3xl mb-2">{currentPost.title}</div>
+                <div className="font-bold text-3xl mb-2">
+                  {currentPost.title}
+                </div>
                 <div className="ml-auto flex gap-6 h-8">
                   <FontAwesomeIcon
                     icon={currentPost.isFavourite ? faHeart : faHeartAlt}
@@ -116,7 +124,14 @@ const PostsGrid = ({ posts }) => {
                   />
                 </div>
               </div>
-              <p className="">{currentPost.description}</p>
+              <div className="py-4">
+                <p className="">{currentPost.description}</p>
+                <div className="flex gap-2 mt-2 font-medium text-sm text-sky-800">
+                  {currentPost.tags.map((tag) => (
+                    <p>#{tag}</p>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </Modal>

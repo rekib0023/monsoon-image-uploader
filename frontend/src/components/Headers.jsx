@@ -33,7 +33,6 @@ const Headers = ({ setShowModal }) => {
     };
     getUser();
   }, []);
-  console.log(user);
   return (
     <>
       {isLoaded && (
