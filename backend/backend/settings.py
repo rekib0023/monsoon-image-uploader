@@ -1,12 +1,7 @@
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(BASE_DIR)
-
-load_dotenv(BASE_DIR / "./.dev.env")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -105,8 +100,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "PAGE_SIZE": 16,
 }
 
-
 AUTH_USER_MODEL = "users.User"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{os.getenv('REDIS_HOST')}:6379/1",
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "KEY_PREFIX": "monsoon_cache",
+    }
+}

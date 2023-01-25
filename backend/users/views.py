@@ -1,5 +1,4 @@
 from rest_framework import status
-from rest_framework.exceptions import APIException
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response

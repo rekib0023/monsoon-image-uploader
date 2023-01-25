@@ -15,3 +15,22 @@ class Post(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+
+class Tags(models.Model):
+    name = models.CharField(max_length=100, null=False, unique=True)
+
+
+class PostTag(models.Model):
+    post = models.ForeignKey(
+        "Post",
+        on_delete=models.CASCADE,
+        related_name="tag_set",
+        related_query_name="tag_set",
+    )
+    tag = models.ForeignKey(
+        "Tags",
+        on_delete=models.CASCADE,
+        related_name="post_set",
+        related_query_name="post_set",
+    )
